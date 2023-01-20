@@ -1,0 +1,77 @@
+variables:
+  VERSION: "$CI_PIPELINE_ID"
+  ASPNETCORE_ENVIRONMENT: "Production"
+
+stages:
+  - build
+  - test
+  - deploy
+
+.build_tags:
+  tags:
+    - "shell"
+
+.deploy_tags:
+  tags:
+    - "shell"
+    
+.prepare_ssh:
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - mkdir -p ~/.ssh
+    - eval "$(ssh-agent -s)"
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 700 ~/.ssh/id_rsa
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa
+    - ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - chmod 644 ~/.ssh/known_hosts
+    - git config --global user.email "kinhnv1801@gmail.com"
+    - git config --global user.name "Nguyen Van Kinh"
+
+build:
+  stage: build
+  extends:
+    - .build_tags
+  only:
+    - main
+  before_script:
+    - sed -i "s/pre-build-params_registry/$REGISTRY/g" ./**/Dockerfile
+    - sed -i "s/pre-build-params_github-source-username/$GITHUB_SOURCE_USERNAME/g" ./**/Dockerfile
+    - sed -i "s/pre-build-params_github-source-token/$GITHUB_SOURCE_TOKEN/g" ./**/Dockerfile
+    - sed -i "s,pre-build-params_github-source-url,$GITHUB_SOURCE_URL,g" ./**/Dockerfile
+  script:
+    - docker build -t $REGISTRY/user.identity-server:${VERSION} ${CI_PROJECT_DIR} -f ${CI_PROJECT_DIR}/UserService.IdentityServer/Dockerfile
+    - docker push $REGISTRY/user.identity-server:${VERSION}
+    - docker image rm $REGISTRY/user.identity-server:${VERSION}
+
+test:
+  stage: test
+  extends:
+    - .build_tags
+  only:
+    - main
+  needs: 
+    - build
+  script:
+    - echo "test"
+    # - docker build -t test-business:latest -f TestMaker.TestService.UnitTests/Dockerfile .
+    # - docker run --rm -t test-business:latest dotnet test --logger:"console;verbosity=normal"
+    # - docker image rm test-business:latest
+        
+deploy:
+  stage: deploy
+  extends:
+    - .deploy_tags
+    - .prepare_ssh
+  only:
+    - main
+  needs: [test]
+  script:
+    - git clone $GITOPS_URL 
+    - cd gitops
+    - yq eval ".services.identityServer.tag = \"${VERSION}\"" -i ./user/values.yaml
+    - git add ./user/values.yaml
+    - git commit -m "change to version $VERSION"
+    - git push
