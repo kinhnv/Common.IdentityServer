@@ -12,6 +12,7 @@ COPY UserService.Domain UserService.Domain
 COPY UserService.Infrastructure UserService.Infrastructure
 WORKDIR "/src/UserService.IdentityServer"
 RUN sed -i "s,<ReferenceOutputAssembly>False</ReferenceOutputAssembly>,<ReferenceOutputAssembly>True</ReferenceOutputAssembly>,g" ./UserService.IdentityServer.csproj
+RUN dotnet nuget add source --username pre-build-params_github-source-username --password pre-build-params_github-source-token --store-password-in-clear-text --name github "pre-build-params_github-source-url"
 RUN dotnet restore "UserService.IdentityServer.csproj"
 RUN dotnet build "UserService.IdentityServer.csproj" -c Release -o /app/build
 
