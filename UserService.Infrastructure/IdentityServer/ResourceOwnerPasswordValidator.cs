@@ -1,6 +1,7 @@
 ﻿using IdentityModel;
 using IdentityServer4.Models;
 using IdentityServer4.Validation;
+using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using UserService.Infrastructure.Entities;
 using UserService.Infrastructure.Extensions;
@@ -11,9 +12,12 @@ namespace UserService.Infrastructure.IdentityServer
     public class ResourceOwnerPasswordValidator : IResourceOwnerPasswordValidator
     {
         private readonly IUsersRepository _usersRepository;
-        public ResourceOwnerPasswordValidator(IUsersRepository usersRepository)
+        private readonly ILogger<IResourceOwnerPasswordValidator> _logger;
+
+        public ResourceOwnerPasswordValidator(IUsersRepository usersRepository, ILogger<IResourceOwnerPasswordValidator> logger)
         {
             _usersRepository = usersRepository;
+            _logger = logger;
         }
 
         //this is used to validate your user account with provided grant at /connect/token
@@ -44,6 +48,7 @@ namespace UserService.Infrastructure.IdentityServer
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message, ex);
                 context.Result = new GrantValidationResult(TokenRequestErrors.InvalidGrant, "Invalid username or password");
             }
         }
