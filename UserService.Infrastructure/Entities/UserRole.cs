@@ -1,18 +1,17 @@
-﻿using i3rothers.Infrastructure.Repository;
+﻿using i3rothers.Infrastructure.Entities.Attributes;
+using i3rothers.Infrastructure.Repository;
 using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
 
 namespace UserService.Infrastructure.Entities
 {
+    [DatabaseTable(Name = "UserRoles")]
     public class UserRole : Entity
     {
-        public UserRole()
-        {
-            IsDeleted = false;
-        }
-        [Required]
+        [DatabaseGuidColumn(IsKey = true)]
         public Guid UserId { get; set; }
 
-        [Required]
+        [DatabaseGuidColumn(IsKey = true)]
         public Guid RoleId { get; set; }
     }
 }

@@ -9,14 +9,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using UserService.Domain.Services;
 using UserService.Infrastructure.Entities;
 using UserService.Infrastructure.Extensions;
 using UserService.Infrastructure.IdentityServer;
 using UserService.Infrastructure.Repositories.Roles;
 using UserService.Infrastructure.Repositories.RoleUsers;
 using UserService.Infrastructure.Repositories.Users;
-using UserService.Infrastructure.Services;
 
 namespace UserService.Infrastructure
 {
@@ -44,10 +42,6 @@ namespace UserService.Infrastructure
             service.AddTransient<IUsersRepository, UsersRepository>();
             service.AddTransient<IRoleUsersRepository, RoleUsersRepository>();
             service.AddTransient<IRolesRepository, RolesRepository>();
-
-            // Services
-            service.AddTransient<IUsersService, UsersService>();
-            service.AddTransient<IRolesService, RolesService>();
 
             // Services For Identity
             service.AddTransient<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>();

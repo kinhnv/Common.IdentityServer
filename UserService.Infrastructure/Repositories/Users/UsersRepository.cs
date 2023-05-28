@@ -9,11 +9,11 @@ namespace UserService.Infrastructure.Repositories.Users
         {
         }
 
-        public async Task<UserWithRoles?> GetUserWithRolesByUserNameAsync(string userName)
+        public async Task<UserWithRoles> GetUserWithRolesByUserNameAsync(string userName)
         {
-            var usersAsQueryable = _dbContext.Set<User>().Where(x => !x.IsDeleted && x.UserName == userName);
-            var rolesAsQueryable = _dbContext.Set<Role>().Where(x => !x.IsDeleted);
-            var userRolesAsQueryable = _dbContext.Set<UserRole>().Where(x => !x.IsDeleted);
+            var usersAsQueryable = _dbContext.Set<User>().Where(x => x.UserName == userName);
+            var rolesAsQueryable = _dbContext.Set<Role>().AsQueryable();
+            var userRolesAsQueryable = _dbContext.Set<UserRole>().AsQueryable();
             var data = from u in usersAsQueryable
                        join ur in _dbContext.Set<UserRole>() on u.UserId equals ur.UserId
                        join r in rolesAsQueryable on ur.RoleId equals r.RoleId
@@ -32,11 +32,11 @@ namespace UserService.Infrastructure.Repositories.Users
             return await Task.FromResult(result);
         }
 
-        public async Task<UserWithRoles?> GetUserWithRolesByUserIdAsync(Guid userId)
+        public async Task<UserWithRoles> GetUserWithRolesByUserIdAsync(Guid userId)
         {
-            var usersAsQueryable = _dbContext.Set<User>().Where(x => !x.IsDeleted && x.UserId == userId);
-            var rolesAsQueryable = _dbContext.Set<Role>().Where(x => !x.IsDeleted);
-            var userRolesAsQueryable = _dbContext.Set<UserRole>().Where(x => !x.IsDeleted);
+            var usersAsQueryable = _dbContext.Set<User>().Where(x => x.UserId == userId);
+            var rolesAsQueryable = _dbContext.Set<Role>().AsQueryable();
+            var userRolesAsQueryable = _dbContext.Set<UserRole>().AsQueryable();
             var data = from u in usersAsQueryable
                        join ur in _dbContext.Set<UserRole>() on u.UserId equals ur.UserId
                        join r in rolesAsQueryable on ur.RoleId equals r.RoleId

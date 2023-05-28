@@ -1,22 +1,27 @@
-﻿using i3rothers.Infrastructure.Repository;
+﻿using i3rothers.Infrastructure.Entities.Attributes;
+using i3rothers.Infrastructure.Repository;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
 
 namespace UserService.Infrastructure.Entities
 {
+    [DatabaseTable(Name = "Users")]
     public class User : Entity
     {
-        [Required]
-        public Guid UserId { get; set; } = Guid.NewGuid();
+        [DatabaseGuidColumn(IsKey = true)]
+        public Guid UserId { get; set; }
 
-        [Required]
-        [StringLength(64)]
-        public string UserName { get; set; } = String.Empty;
+        [DatabaseStringColumn(IsRequired = true, StringLength = 64)]
+        public string UserName { get; set; } = null!;
 
-        [Required]
-        public string Password { get; set; } = String.Empty;
+        [DatabaseStringColumn(IsRequired = true, StringLength = 64)]
+        public string Password { get; set; } = null!;
 
-        public string FirstName { get; set; } = String.Empty;
+        [DatabaseStringColumn(IsRequired = true, StringLength = 64)]
+        public string FirstName { get; set; } = null!;
 
-        public string LastName { get; set; } = String.Empty;
+        [DatabaseStringColumn(IsRequired = true, StringLength = 64)]
+        public string LastName { get; set; } = null!;
     }
 }

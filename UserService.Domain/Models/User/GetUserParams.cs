@@ -4,9 +4,5 @@ namespace UserService.Domain.Models.User
 {
     public class GetUserParams : GetPaginationParams
     {
-        public GetUserParams()
-        {
-            IsDeleted = false;
-        }
     }
 }

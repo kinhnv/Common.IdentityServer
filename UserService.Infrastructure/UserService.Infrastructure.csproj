@@ -22,11 +22,15 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="AspNetCore.Environment" Version="6.0.6" />
-    <PackageReference Include="i3rothers.Infrastructure" Version="1.0.0" />
+    <PackageReference Include="i3rothers.Infrastructure" Version="1.1.7" />
   </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\UserService.Domain\UserService.Domain.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

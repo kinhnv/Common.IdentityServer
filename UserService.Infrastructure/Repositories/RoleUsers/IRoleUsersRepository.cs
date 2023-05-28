@@ -5,6 +5,5 @@ namespace UserService.Infrastructure.Repositories.RoleUsers
 {
     public interface IRoleUsersRepository: IRepository<UserRole>
     {
-        Task RemoveRoleUserByUserIdAsync(Guid userId);
     }
 }

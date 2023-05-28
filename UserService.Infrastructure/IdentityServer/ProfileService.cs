@@ -69,14 +69,11 @@ namespace UserService.Infrastructure.IdentityServer
 
                 if (flag)
                 {
-                    var user = await _usersRepository.GetAsync(userId);
+                    var user = await _usersRepository.GetAsync(x => x.UserId == userId);
 
                     if (user != null)
                     {
-                        if (!user.IsDeleted)
-                        {
-                            context.IsActive = !user.IsDeleted;
-                        }
+                        context.IsActive = true;
                     }
                 }
             }
