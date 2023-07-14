@@ -29,9 +29,9 @@ build:
     - sed -i "s/pre-build-params_github-source-token/$GITHUB_SOURCE_TOKEN/g" ./**/Dockerfile
     - sed -i "s,pre-build-params_github-source-url,$GITHUB_SOURCE_URL,g" ./**/Dockerfile
   script:
-    - docker build -t $REGISTRY/user.identity-server:${VERSION} ${CI_PROJECT_DIR} -f ${CI_PROJECT_DIR}/IdentityServer/Dockerfile
-    - docker push $REGISTRY/user.identity-server:${VERSION}
-    - docker image rm $REGISTRY/user.identity-server:${VERSION}
+    - docker build -t $REGISTRY/common.identity-server:${VERSION} ${CI_PROJECT_DIR} -f ${CI_PROJECT_DIR}/IdentityServer/Dockerfile
+    - docker push $REGISTRY/common.identity-server:${VERSION}
+    - docker image rm $REGISTRY/common.identity-server:${VERSION}
 
 test:
   stage: test
@@ -55,8 +55,8 @@ deploy:
   script:
     - git clone $GITOPS_URL 
     - cd gitops
-    - yq eval ".servers.identityServer.tag = \"${VERSION}\"" -i ./user/values.yaml
-    - git add ./user/values.yaml
+    - yq eval ".servers.identityServer.tag = \"${VERSION}\"" -i ./common/values.yaml
+    - git add ./common/values.yaml
     - git commit -m "change to version $VERSION"
     - git push
     - cd .. && rm -rf gitops
