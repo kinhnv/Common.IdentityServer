@@ -27,7 +27,7 @@ namespace Infrastructure
 
             service.AddDbContext<ApplicationDbContext>(optionsBuilder =>
             {
-                optionsBuilder.UseSqlServer(configuration.GetConfiguration("Mssql:ConnectionString"));
+                optionsBuilder.UseSqlServer(configuration.GetConfiguration("Mssql:ConnectionString") ?? string.Empty);
             });
 
             service.AddMongoContext(new MongoDbSettings
