@@ -25,9 +25,9 @@ build:
     - main
   before_script:
     - sed -i "s/pre-build-params_registry/$REGISTRY/g" ./**/Dockerfile
-    - sed -i "s/pre-build-params_github-source-username/$GITHUB_SOURCE_USERNAME/g" ./**/Dockerfile
-    - sed -i "s/pre-build-params_github-source-token/$GITHUB_SOURCE_TOKEN/g" ./**/Dockerfile
-    - sed -i "s,pre-build-params_github-source-url,$GITHUB_SOURCE_URL,g" ./**/Dockerfile
+    - sed -i "s/pre-build-params_gitlab-source-username/$GITLAB_SOURCE_USERNAME/g" ./**/Dockerfile
+    - sed -i "s/pre-build-params_gitlab-source-token/$GITLAB_SOURCE_TOKEN/g" ./**/Dockerfile
+    - sed -i "s,pre-build-params_gitlab-source-url,$GITLAB_SOURCE_URL,g" ./**/Dockerfile
   script:
     - docker build -t $REGISTRY/common.identity-server:${VERSION} ${CI_PROJECT_DIR} -f ${CI_PROJECT_DIR}/IdentityServer/Dockerfile
     - docker push $REGISTRY/common.identity-server:${VERSION}

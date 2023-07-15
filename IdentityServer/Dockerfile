@@ -12,7 +12,7 @@ COPY Domain Domain
 COPY Infrastructure Infrastructure
 WORKDIR "/src/IdentityServer"
 RUN sed -i "s,<ReferenceOutputAssembly>False</ReferenceOutputAssembly>,<ReferenceOutputAssembly>True</ReferenceOutputAssembly>,g" ./IdentityServer.csproj
-RUN dotnet nuget add source --username pre-build-params_github-source-username --password pre-build-params_github-source-token --store-password-in-clear-text --name github "pre-build-params_github-source-url"
+RUN dotnet nuget add source --username pre-build-params_gitlab-source-username --password pre-build-params_gitlab-source-token --store-password-in-clear-text --name github "pre-build-params_gitlab-source-url"
 RUN dotnet restore "IdentityServer.csproj"
 RUN dotnet build "IdentityServer.csproj" -c Release -o /app/build
 
