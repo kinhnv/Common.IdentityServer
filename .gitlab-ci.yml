@@ -1,72 +1,45 @@
-include: 'https://raw.githubusercontent.com/kinhnv/Platform.Common/main/pipeline/.prepare-ssh.yml'
-
-variables:
-  VERSION: "$CI_PIPELINE_ID"
-  ASPNETCORE_ENVIRONMENT: "Production"
+include: 
+  - "https://raw.githubusercontent.com/kinhnv/Platform.Common/main/pipeline/.prepare-ssh.yml"
+  - "https://raw.githubusercontent.com/kinhnv/Platform.Common/main/pipeline/.dotnet.yml"
 
 stages:
   - build
   - test
   - deploy
 
-.build_tags:
-  tags:
-    - "shell"
-
-.deploy_tags:
-  tags:
-    - "shell"
+.production_config:
+  variables:
+    ASPNETCORE_ENVIRONMENT: "Production"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
 
 build:
   stage: build
+  variables:
+    VERSION: ${CI_PIPELINE_ID}
+    DOCKERFILE: ${CI_PROJECT_DIR}/IdentityServer/Dockerfile
+    IMAGE: registry.gitlab.com/i3rothers/common/identity-server:${CI_PIPELINE_ID}
   extends:
-    - .build_tags
-  only:
-    - main
-  before_script:
-    - sed -i "s/pre-build-params_registry/$REGISTRY/g" ./**/Dockerfile
-    - sed -i "s/pre-build-params_gitlab-source-username/$GITLAB_SOURCE_USERNAME/g" ./**/Dockerfile
-    - sed -i "s/pre-build-params_gitlab-source-token/$GITLAB_SOURCE_TOKEN/g" ./**/Dockerfile
-    - sed -i "s,pre-build-params_gitlab-source-url,$GITLAB_SOURCE_URL,g" ./**/Dockerfile
-  script:
-    - docker build -t $REGISTRY/common.identity-server:${VERSION} ${CI_PROJECT_DIR} -f ${CI_PROJECT_DIR}/IdentityServer/Dockerfile
-    - docker push $REGISTRY/common.identity-server:${VERSION}
-    - docker image rm $REGISTRY/common.identity-server:${VERSION}
+    - .production_config
+    - .dotnet_build
 
 test:
   stage: test
-  extends:
-    - .build_tags
-  only:
-    - main
   needs: 
     - build
+  tags:
+    - shell
+  extends:
+    - .production_config
   script:
     - echo "test"
         
 deploy:
   stage: deploy
+  variables:
+    VERSION: ${CI_PIPELINE_ID}
+    TAG_CONFIG: .services.identityServer.tag
+    VALUE_YAML_FILE: common/values.yaml
   extends:
-    - .deploy_tags
-    - .prepare_ssh
-  only:
-    - main
-  needs: [test]
-  script:
-    - git clone $GITOPS_URL 
-    - cd gitops
-    - yq eval ".servers.identityServer.tag = \"${VERSION}\"" -i ./common/values.yaml
-    - git add ./common/values.yaml
-    - git commit -m "change to version $VERSION"
-    - git push
-    - cd .. && rm -rf gitops
-    - git remote set-url origin $GITHUB_URL
-    - >
-      if [ `git branch --list main` ]; then
-        echo "push to existing branch"; 
-        git push -u origin HEAD:main;
-      else
-        echo "create new branch";
-        git checkout -b main; 
-        git push -u origin main;
-      fi
+    - .production_config
+    - .dotnet_deploy
