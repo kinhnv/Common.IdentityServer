@@ -38,7 +38,7 @@ deploy:
   stage: deploy
   variables:
     VERSION: ${CI_PIPELINE_ID}
-    TAG_CONFIG: .services.identityServer.tag
+    TAG_CONFIG: .servers.identityServer.tag
     VALUE_YAML_FILE: common/values.yaml
   extends:
     - .production_config
