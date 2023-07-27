@@ -16,7 +16,7 @@ COPY Infrastructure Infrastructure
 WORKDIR "/src/IdentityServer"
 RUN sed -i \
     "s,<ReferenceOutputAssembly>False</ReferenceOutputAssembly>,<ReferenceOutputAssembly>True</ReferenceOutputAssembly>,g" \
-    ./EventService.Api.csproj
+    ./IdentityServer.csproj
 RUN dotnet nuget add source \
     --username $GITLAB_SOURCE_USERNAME \
     --password $GITLAB_SOURCE_TOKEN \
