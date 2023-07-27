@@ -15,6 +15,8 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="i3rothers.AspNetCore" Version="1.0.6" />
+    <PackageReference Include="i3rothers.Domain" Version="1.0.6" />
     <PackageReference Include="IdentityServer4" Version="4.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.6">
@@ -27,8 +29,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="AspNetCore.Environment" Version="6.0.6" />
-    <PackageReference Include="i3rothers.Infrastructure" Version="1.1.7" />
+    <PackageReference Include="i3rothers.Infrastructure" Version="1.0.6" />
   </ItemGroup>
   
   <ItemGroup>
